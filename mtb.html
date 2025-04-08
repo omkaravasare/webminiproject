@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineTix - Movie Ticket Booking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <h1>CineTix</h1>
+            </div>
+            <p class="tagline">Your premier movie ticket booking experience</p>
+        </header>
+
+        <!-- Username Input -->
+        <div id="username-section" class="card">
+            <h2><i class="fas fa-user"></i> Welcome</h2>
+            <p>Please enter your name to begin your booking journey</p>
+            <div class="form-group">
+                <label for="username">Your Name:</label>
+                <input type="text" id="username" placeholder="Enter your name here">
+            </div>
+            <button class="btn-primary" onclick="startBooking()">
+                <i class="fas fa-arrow-right"></i> Start Booking
+            </button>
+        </div>
+
+        <!-- Movie Selection -->
+        <div id="movie-selection" class="card hidden">
+            <h2><i class="fas fa-ticket-alt"></i> Now Showing</h2>
+            <p>Select a movie to continue</p>
+            <div id="movie-list" class="movie-grid"></div>
+        </div>
+
+        <!-- Seat Selection -->
+        <div id="seat-selection" class="card hidden">
+            <h2><i class="fas fa-couch"></i> Select Your Seats</h2>
+            <div class="movie-info">
+                <div class="movie-poster" id="movie-poster">
+                    <i class="fas fa-film fa-3x"></i>
+                </div>
+                <div>
+                    <h3>You're booking for: <span id="selected-movie" class="highlight"></span></h3>
+                </div>
+            </div>
+            
+            <div class="screen-container">
+                <div class="screen">SCREEN</div>
+            </div>
+            
+            <div class="legend">
+                <div><span class="seat-sample available"></span> Available</div>
+                <div><span class="seat-sample selected"></span> Selected</div>
+                <div><span class="seat-sample booked"></span> Booked</div>
+            </div>
+            
+            <div id="seating-plan" class="seating-plan"></div>
+        <div class="seat-counter">
+            <span id="selected-count">0</span>/<span id="total-needed">1</span> seats selected
+        </div>
+            
+            <div class="ticket-counter">
+                <label for="num-tickets">Number of tickets:</label>
+                <div class="counter-controls">
+                    <button class="counter-btn" onclick="decrementTickets()">-</button>
+                    <input type="number" id="num-tickets" min="1" value="1" readonly>
+                    <button class="counter-btn" onclick="incrementTickets()">+</button>
+                </div>
+            </div>
+            
+            <button class="btn-primary" onclick="proceedToPayment()">
+                <i class="fas fa-credit-card"></i> Proceed to Payment
+            </button>
+        </div>
+
+        <!-- Payment and Coupon -->
+        <div id="payment-section" class="card hidden">
+            <h2><i class="fas fa-file-invoice"></i> Booking Summary</h2>
+            
+            <div class="summary-container">
+                <div class="summary-item">
+                    <i class="fas fa-film"></i>
+                    <div>
+                        <h4>Movie</h4>
+                        <p id="summary-movie"></p>
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <i class="fas fa-couch"></i>
+                    <div>
+                        <h4>Seats</h4>
+                        <p id="summary-seats"></p>
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <i class="fas fa-rupee-sign"></i>
+                    <div>
+                        <h4>Total Cost</h4>
+                        <p>₹<span id="summary-cost"></span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="coupon-section">
+                <h3><i class="fas fa-tag"></i> Have a coupon?</h3>
+                <div class="form-group">
+                    <input type="text" id="coupon" placeholder="Enter coupon code">
+                    <button class="btn-secondary" onclick="applyCoupon()">Apply</button>
+                </div>
+                <div class="coupon-hints">
+                    <p>Try: DISCOUNT50 or FREETICKET</p>
+                </div>
+            </div>
+            
+            <div class="payment-methods">
+                <h3>Payment Method</h3>
+                <div class="method-options">
+                    <label class="method-option">
+                        <input type="radio" name="payment" checked>
+                        <i class="fas fa-credit-card"></i> Credit/Debit Card
+                    </label>
+                    <label class="method-option">
+                        <input type="radio" name="payment">
+                        <i class="fas fa-wallet"></i> Digital Wallet
+                    </label>
+                    <label class="method-option">
+                        <input type="radio" name="payment">
+                        <i class="fas fa-university"></i> Net Banking
+                    </label>
+                </div>
+            </div>
+            
+            <button class="btn-primary" onclick="confirmBooking()">
+                <i class="fas fa-check-circle"></i> Confirm Booking
+            </button>
+        </div>
+
+        <!-- Confirmation -->
+        <div id="confirmation" class="card hidden">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Booking Confirmed!</h2>
+            <p>Thank you <span id="confirmed-username" class="highlight"></span>, your tickets have been booked.</p>
+            <p>An email with the booking details has been sent to your registered email address.</p>
+            
+            <div class="action-buttons">
+                <button class="btn-secondary" onclick="bookMore()">
+                    <i class="fas fa-plus"></i> Book More
+                </button>
+                <button class="btn-secondary" onclick="viewBookingDetails()">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+                <button class="btn-primary" onclick="exit()">
+                    <i class="fas fa-sign-out-alt"></i> Exit
+                </button>
+            </div>
+        </div>
+
+        <!-- Booking Details Modal -->
+        <div id="booking-details" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-ticket-alt"></i> Your Booking Details</h3>
+                    <button class="close-btn" onclick="closeBookingDetails()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="ticket">
+                    <div class="ticket-header">
+                        <div class="logo">
+                            <i class="fas fa-film"></i>
+                            <span>CineTix</span>
+                        </div>
+                        <div class="ticket-number">
+                            #<span id="ticket-number"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-body">
+                        <div class="ticket-info">
+                            <div class="info-item">
+                                <label>Name:</label>
+                                <span id="details-username"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Movie:</label>
+                                <span id="details-movie"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Date:</label>
+                                <span id="details-date"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Time:</label>
+                                <span>7:30 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Seats:</label>
+                                <span id="details-seats"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Total:</label>
+                                <span>₹<span id="details-cost"></span></span>
+                            </div>
+                        </div>
+                        <div class="qr-code">
+                            <i class="fas fa-qrcode fa-5x"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-footer">
+                        <p>Please arrive 15 minutes before showtime</p>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" onclick="closeBookingDetails()">
+                    <i class="fas fa-check"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 CineTix - All rights reserved</p>
+    </footer>
+
+    <!-- Background elements -->
+    <div class="background-elements">
+        <i class="fas fa-popcorn bg-icon"></i>
+        <i class="fas fa-ticket-alt bg-icon"></i>
+        <i class="fas fa-video bg-icon"></i>
+        <i class="fas fa-film bg-icon"></i>
+        <i class="fas fa-camera bg-icon"></i>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
