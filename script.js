@@ -199,8 +199,8 @@ function resetSeatSelection() {
 
 // Proceed to payment
 function proceedToPayment() {
-    const numTickets1 = parseInt(document.getElementById("num-tickets").value);
-    document.getElementById("total-needed").textContent = numTickets;
+    const numTickets = parseInt(document.getElementById("num-tickets").value);
+    
     if (bookedSeats.length === 0) {
         alert("Please select at least one seat!");
         return;
@@ -217,6 +217,7 @@ function proceedToPayment() {
     document.getElementById("summary-movie").textContent = selectedMovie;
     document.getElementById("summary-seats").textContent = bookedSeats.join(", ");
     document.getElementById("summary-cost").textContent = totalCost;
+    document.getElementById("total-needed").textContent = numTickets;
 }
 function updateSeatCounter() {
     document.getElementById("selected-count").textContent = bookedSeats.length;
